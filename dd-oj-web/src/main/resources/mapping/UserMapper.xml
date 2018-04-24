@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddoj.web.dao.UserMapper">
+
+    <insert id="save" parameterType="UserEntity">
+        INSERT INTO `user` (`email`,`nickname`,`password`,`permission`,`register_time`)
+        VALUES (#{email}, #{nickname}, #{password}, #{permission}, #{registerTime})
+    </insert>
+
+    <insert id="saveRoot">
+        INSERT IGNORE INTO user (uid, email, nickname, password, permission, role, register_time)
+                VALUES (#{uid}, #{email}, #{nickname}, #{password}, #{permission}, #{role}, #{registerTime})
+    </insert>
+
+    <select id="count" resultType="Integer">
+        SELECT count(*) FROM user
+    </select>
+
+    <select id="listAll" resultMap="userEntityResultMap">
+        SELECT * FROM user ORDER BY register_time DESC
+    </select>
+
+    <select id="listUserRank" resultMap="userEntityResultMap">
+        SELECT uid, nickname, avatar, ac_times, finished_problems, submit_times FROM user
+            WHERE user.role NOT IN (#{admin}, #{root})
+        ORDER BY finished_problems DESC, ac_times DESC, submit_times DESC
+    </select>
+
+    <select id="getByUid" resultMap="userEntityResultMap">
+        SELECT * FROM `user` WHERE `uid` = #{uid}
+    </select>
+
+    <select id="getByEmail" resultMap="userEntityResultMap">
+        SELECT * FROM `user` WHERE `email` = #{email}
+    </select>
+
+    <select id="getByEmailPassword" resultMap="userEntityResultMap">
+        SELECT * FROM `user` WHERE `email` = #{email} AND `password` = #{password}
+    </select>
+
+    <update id="updateByUid">
+        UPDATE `user`
+        <set>
+            <if test="data.email != null">email = #{data.email},</if>
+            <if test="data.nickname != null">nickname = #{data.nickname},</if>
+            <if test="data.avatar != null">avatar = #{data.avatar},</if>
+            <if test="data.password != null">password = #{data.password},</if>
+            <if test="data.role != null">role = #{data.role},</if>
+            <if test="data.permission != null">permission = #{data.permission},</if>
+            <if test="data.motto != null">motto = #{data.motto},</if>
+            <if test="data.gender != null">gender = #{data.gender},</if>
+            <if test="data.verified != null">verified = #{data.verified},</if>
+            <if test="data.submitTimes != null">submit_times = submit_times+1,</if>
+            <if test="data.contestTimes != null">contest_times = contest_times+1,</if>
+            <if test="data.ACTimes != null">ac_times = ac_times+1,</if>
+            <if test="data.WATimes != null">wa_times = wa_times+1,</if>
+            <if test="data.RTETimes != null">rte_times = rte_times+1,</if>
+            <if test="data.TLETimes != null">tle_times = tle_times+1,</if>
+            <if test="data.CETimes != null"> ce_times = ce_times+1,</if>
+            <if test="data.finishedProblems != null">finished_problems = finished_problems+1,</if>
+        </set>
+        WHERE `uid`=#{uid}
+    </update>
+
+    <resultMap id="moderatorsMap" type="HashMap">
+        <id property="uid" column="uid"/>
+        <result property="nickname" column="nickname"/>
+        <result property="avatar" column="url"/>
+    </resultMap>
+
+    <resultMap id="userEntityResultMap" type="UserEntity">
+        <id property="uid" column="uid"/>
+        <result property="email" column="email"/>
+        <result property="nickname" column="nickname"/>
+        <result property="avatar" column="avatar"/>
+        <result property="password" column="password"/>
+        <result property="role" column="role"/>
+        <result property="permission" column="permission"/>
+        <result property="submitTimes" column="submit_times"/>
+        <result property="contestTimes" column="contest_times"/>
+        <result property="ACTimes" column="ac_times"/>
+        <result property="WATimes" column="wa_times"/>
+        <result property="RTETimes" column="rte_times"/>
+        <result property="TLETimes" column="tle_times"/>
+        <result property="CETimes" column="ce_times"/>
+        <result property="finishedProblems" column="finished_problems"/>
+        <result property="score" column="score"/>
+        <result property="gender" column="gender"/>
+        <result property="motto" column="motto"/>
+        <result property="registerTime" column="register_time"/>
+        <result property="verified" column="verified"/>
+    </resultMap>
+</mapper>

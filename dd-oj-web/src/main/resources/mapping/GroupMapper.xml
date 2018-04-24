@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddoj.web.dao.GroupMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="gid">
+        INSERT INTO `group`(`owner`,`name`,`password`,`create_time`) VALUES
+            (#{owner},#{name},#{password},#{createTime})
+    </insert>
+
+    <select id="count" resultType="Integer">
+        SELECT count(*) FROM `group`
+    </select>
+
+    <select id="listAll" resultMap="groupMap">
+        SELECT * FROM `group` ORDER BY create_time DESC
+    </select>
+
+    <select id="getGroupByGid" resultMap="groupMap">
+        SELECT * FROM `group` WHERE `gid` = #{gid}
+    </select>
+
+    <select id="listGroupsByOwner" resultMap="groupMap">
+        SELECT * FROM `group` WHERE owner = #{owner} ORDER BY create_time DESC
+    </select>
+
+    <update id="updateByGid">
+        UPDATE `group` SET name=#{data.name}, password=#{data.password} WHERE gid=#{gid}
+    </update>
+
+    <delete id="deleteByGid">
+        DELETE FROM `group` WHERE gid=#{gid}
+    </delete>
+
+    <resultMap id="groupMap" type="GroupEntity">
+        <id column="gid" property="gid"/>
+        <result column="owner" property="owner"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+</mapper>

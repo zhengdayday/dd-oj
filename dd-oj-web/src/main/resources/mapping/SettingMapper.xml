@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddoj.web.dao.SettingMapper">
+
+    <insert id="save">
+        REPLACE INTO setting VALUE (#{key}, #{value})
+    </insert>
+
+    <insert id="saveList">
+        REPLACE INTO setting (`key`, value) VALUES
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.key}, #{item.value})
+        </foreach>
+    </insert>
+
+    <select id="getByKey" resultMap="settingMap">
+        SELECT * FROM setting WHERE `key`=#{key}
+    </select>
+
+    <select id="listByKeys" resultMap="settingMap">
+        SELECT * FROM setting WHERE `key` IN
+        <foreach item="item" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY field(`key`,
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item}
+        </foreach>
+        )
+    </select>
+
+    <resultMap id="settingMap" type="SettingEntity">
+        <id column="key" property="key"/>
+        <result column="value" property="value"/>
+    </resultMap>
+</mapper>

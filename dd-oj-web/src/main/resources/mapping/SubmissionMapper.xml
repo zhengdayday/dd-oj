@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddoj.web.dao.SubmissionMapper">
+
+    <insert id="save" parameterType="SubmissionEntity">
+        INSERT INTO `submission` (`owner`, `pid`, `cid`, `gid`, `source_code`, `lang`,
+                                  `time`, `memory`, `status`, `submit_time`)
+        VALUES (#{owner}, #{pid}, #{cid}, #{gid}, #{sourceCode}, #{lang}, #{time}, #{memory}, #{status}, #{submitTime})
+    </insert>
+
+    <select id="countByPid" resultType="Integer">
+        SELECT count(*) FROM submission WHERE pid = #{pid}
+    </select>
+
+    <select id="listSubmissionsByOwnerPidCid" resultType="HashMap">
+        SELECT submission.*, attachment.url
+        <if test="owner == null">
+            , user.nickname
+        </if>
+        FROM submission
+          LEFT JOIN attachment ON submission.source_code=attachment.aid
+        <if test="owner == null">
+          LEFT JOIN user on submission.owner=user.uid
+        </if>
+        WHERE pid=#{pid}
+        <if test="owner != null">
+            AND submission.owner = #{owner}
+        </if>
+        <if test="cid != null">
+            AND cid = #{cid}
+        </if>
+
+        ORDER BY submit_time DESC
+    </select>
+
+    <resultMap id="submissionMap" type="SubmissionEntity">
+        <id column="sid" property="sid"/>
+        <result column="owner" property="owner"/>
+        <result column="pid" property="pid" />
+        <result column="cid" property="cid"/>
+        <result column="gid" property="gid"/>
+        <result column="source_code" property="sourceCode" />
+        <result column="lang" property="lang" />
+        <result column="time" property="time"/>
+        <result column="memory" property="memory"/>
+        <result column="status" property="status"/>
+        <result column="submit_time" property="submitTime"/>
+    </resultMap>
+</mapper>

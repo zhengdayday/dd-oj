@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ddoj.web.dao.ContestUserMapper">
+
+    <insert id="save">
+        INSERT IGNORE INTO `contest_user`(`cid`,`uid`,`join_time`)
+        VALUES (#{cid},#{uid},#{joinTime})
+    </insert>
+
+    <select id="getByCidUid" resultMap="contestUserMap">
+        SELECT * FROM `contest_user` WHERE `cid` = #{cid} AND `uid` = #{uid}
+    </select>
+
+    <select id="listUserJoinedContestsByUid" resultType="HashMap">
+        SELECT contest_user.*, contest.name
+        FROM contest_user
+            LEFT JOIN contest
+                ON contest_user.cid=contest.cid
+        WHERE uid=#{uid}
+        ORDER BY join_time DESC
+    </select>
+
+    <select id="countByCid" resultType="Integer">
+        SELECT count(*) FROM contest_user WHERE cid=#{cid}
+    </select>
+
+    <update id="updateByCidUid">
+        UPDATE contest_user
+        <set>
+            <if test="data.totalUsedTime != null">
+                total_used_time = total_used_time + #{data.totalUsedTime},
+            </if>
+            <if test="data.totalScore != null">
+                total_score = total_score + #{data.totalScore},
+            </if>
+            <if test="data.totalWrongTimes != null">
+                total_wrong_times = total_wrong_times + #{data.totalWrongTimes},
+            </if>
+            <if test="data.submitTimes != null">
+                submit_times = submit_times + 1,
+            </if>
+            <if test="data.finishedProblems != null">
+                finished_problems = finished_problems + 1,
+            </if>
+            <if test="data.ACTimes != null">
+                ac_times = ac_times + 1,
+            </if>
+            <if test="data.WATimes != null">
+                wa_times = wa_times + 1,
+            </if>
+            <if test="data.RTETimes != null">
+                rte_times = rte_times + 1,
+            </if>
+            <if test="data.TLETimes != null">
+                tle_times = tle_times + 1,
+            </if>
+            <if test="data.CETimes != null">
+                ce_times = ce_times + 1,
+            </if>
+        </set>
+        WHERE `cid` = #{cid} AND `uid` = #{uid}
+    </update>
+
+    <resultMap id="contestUserMap" type="ContestUserEntity">
+        <id column="cid" property="cid"/>
+        <id column="uid" property="uid"/>
+        <result column="total_used_time" property="totalUsedTime"/>
+        <result column="total_score" property="totalScore"/>
+        <result column="total_wrong_times" property="totalWrongTimes"/>
+        <result column="submit_times" property="submitTimes"/>
+        <result column="finished_problems" property="finishedProblems"/>
+        <result column="ac_times" property="ACTimes"/>
+        <result column="wa_times" property="WATimes"/>
+        <result column="rte_times" property="RTETimes"/>
+        <result column="tle_times" property="TLETimes"/>
+        <result column="ce_times" property="CETimes"/>
+        <result column="join_time" property="joinTime"/>
+    </resultMap>
+</mapper>

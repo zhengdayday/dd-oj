@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    
+    <typeAliases>
+        <package name="com.ddoj.web.entity"/>
+    </typeAliases>
+
+    <typeHandlers>
+        <typeHandler handler="com.ddoj.web.data.JsonArrayTypeHandler"
+                     javaType="com.alibaba.fastjson.JSONArray" jdbcType="VARCHAR"/>
+
+        <typeHandler handler="com.ddoj.web.data.JsonObjectTypeHandler"
+                     javaType="com.alibaba.fastjson.JSONObject" jdbcType="VARCHAR"/>
+    </typeHandlers>
+
+    <plugins>
+        <!-- com.github.pagehelper为PageHelper类所在包名 -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!-- 使用下面的方式配置参数，后面会有所有的参数介绍 -->
+            <property name="helperDialect" value="mysql"/>
+            <property name="offsetAsPageNum" value="true"/>
+            <property name="rowBoundsWithCount" value="true"/>
+        </plugin>
+    </plugins>
+
+    <!--<mappers>
+        <mapper resource="mapping/UserMapper.xml"/>
+        <mapper resource="mapping/ProblemMapper.xml"/>
+        <mapper resource="mapping/ContestProblemMapper.xml"/>
+        <mapper resource="mapping/TestCasesMapper.xml"/>
+        <mapper resource="mapping/ContestMapper.xml"/>
+        <mapper resource="mapping/ContestUserMapper.xml"/>
+        <mapper resource="mapping/AttachmentMapper.xml"/>
+        <mapper resource="mapping/GroupMapper.xml" />
+        <mapper resource="mapping/GroupUserMapper.xml"/>
+        <mapper resource="mapping/SubmissionMapper.xml"/>
+        <mapper resource="mapping/ContestProblemUserMapper.xml"/>
+        <mapper resource="mapping/TagsMapper.xml"/>
+        <mapper resource="mapping/TagProblemMapper.xml"/>
+        <mapper resource="mapping/ProblemUserMapper.xml"/>
+        <mapper resource="mapping/UserLogMapper.xml"/>
+        <mapper resource="mapping/MessageMapper.xml"/>
+        <mapper resource="mapping/ProblemModeratorMapper.xml"/>
+        <mapper resource="mapping/SettingMapper.xml"/>
+    </mappers>-->
+</configuration>
